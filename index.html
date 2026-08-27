@@ -1068,6 +1068,10 @@
     .toast-msg.active {
       opacity: 1; transform: translateX(-50%) translateY(0);
     }
+    @keyframes alertPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+      50% { transform: scale(1.08); box-shadow: 0 0 35px rgba(236, 72, 153, 0.6); }
+    }
 
     /* ===== RESPONSIVE BREAKPOINTS (MOBILE, IPAD, DESKTOP) ===== */
     @media (max-width: 1024px) {
@@ -2228,7 +2232,12 @@
     const submitBtn = event.target.querySelector('button[type="submit"]');
 
     if (!giftUrl) {
-      alert('กรุณากรอกลิงก์ซองของขวัญ TrueMoney Wallet');
+      showIbukiAlert(
+        'ยังไม่ได้ระบุลิงก์ซองของขวัญ',
+        'กรุณากรอกลิงก์ซองของขวัญจาก TrueMoney Wallet ในช่องสีเหลืองก่อนกดยืนยันนะงับ! 🎁',
+        'gift',
+        'วิธีสร้าง: เปิดแอป TrueMoney > กดส่งของขวัญ > ใส่จำนวนเงิน > เลือกรับ 1 คน > คัดลอกลิงก์'
+      );
       return;
     }
 
@@ -2274,7 +2283,12 @@
       }
 
       if (!isSuccess) {
-        alert('⚠️ ' + errorMessage);
+        showIbukiAlert(
+          'ไม่สามารถรับซองของขวัญได้',
+          errorMessage,
+          'warning',
+          'ข้อแนะนำ: หากทดสอบเอง กรุณาใช้เบอร์ TrueMoney อื่นสร้างซองของขวัญ (เนื่องจากระบบ TrueMoney ไม่อนุญาตให้รับซองของเบอร์ตนเองครับ)'
+        );
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHtml;
         return;
@@ -2321,14 +2335,14 @@
       }
 
       // Re-sync with backend
-      setTimeout(loadInitialStats, 1200);
+      setTimeout(loadInitialStats, 1000);
 
       // Show Success Modal
       const modal = document.getElementById('customModal');
       const modalBody = document.getElementById('modalBody');
       modalBody.innerHTML = `
         <div style="text-align:center; padding: 10px 0;">
-          <div style="font-size: 3.5rem; margin-bottom: 8px;">🍵✨</div>
+          <div style="font-size: 3.5rem; margin-bottom: 8px; animation: alertPulse 2s infinite ease-in-out;">🍵✨</div>
           <h3 style="font-family:'Kanit',sans-serif; font-size:1.6rem; font-weight:800; color:#F472B6; margin-bottom:6px;">
             ขอบคุณสำหรับค่าชาเขียว ${amountReceived.toLocaleString()} บาท นะงับ! 💜💖
           </h3>
@@ -2355,6 +2369,64 @@
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalBtnHtml;
     }
+  }
+
+  // Custom Interactive Alert Modal (Purple Glassmorphism Theme)
+  function showIbukiAlert(title, message, iconType = 'warning', tipText = '') {
+    const modal = document.getElementById('customModal');
+    const modalBody = document.getElementById('modalBody');
+    
+    let iconEmoji = '⚠️';
+    let iconBg = 'linear-gradient(135deg, #F59E0B, #EC4899)';
+    let titleColor = '#FBBF24';
+    
+    if (iconType === 'error') {
+      iconEmoji = '❌';
+      iconBg = 'linear-gradient(135deg, #EF4444, #DC2626)';
+      titleColor = '#F87171';
+    } else if (iconType === 'info') {
+      iconEmoji = 'ℹ️';
+      iconBg = 'linear-gradient(135deg, #3B82F6, #8B5CF6)';
+      titleColor = '#60A5FA';
+    } else if (iconType === 'gift') {
+      iconEmoji = '🎁';
+      iconBg = 'linear-gradient(135deg, #A855F7, #EC4899)';
+      titleColor = '#F472B6';
+    }
+
+    modalBody.innerHTML = `
+      <div style="text-align:center; padding: 4px 0;">
+        <!-- Animated Icon Ring -->
+        <div style="width:72px; height:72px; border-radius:50%; background:${iconBg}; margin: 0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:2.2rem; box-shadow:0 0 30px rgba(245, 158, 11, 0.45); animation: alertPulse 1.8s infinite ease-in-out;">
+          ${iconEmoji}
+        </div>
+        
+        <h3 style="font-family:'Kanit',sans-serif; font-size:1.45rem; font-weight:800; color:${titleColor}; margin-bottom:12px; letter-spacing:-0.01em;">
+          ${escapeHtml(title)}
+        </h3>
+
+        <div style="background:rgba(168,85,247,0.12); border:1px solid rgba(192,132,252,0.28); border-radius:14px; padding:16px 18px; margin-bottom:16px; font-family:'Kanit',sans-serif; font-size:0.95rem; color:#FAF5FF; line-height:1.6;">
+          ${escapeHtml(message)}
+        </div>
+
+        ${tipText ? `
+          <div style="background:rgba(245,158,11,0.08); border:1px dashed rgba(245,158,11,0.35); border-radius:12px; padding:12px 14px; margin-bottom:20px; font-size:0.84rem; color:#FDE68A; font-family:'Kanit',sans-serif; text-align:left; display:flex; align-items:flex-start; gap:8px;">
+            <span style="font-size:1.1rem;">💡</span>
+            <span>${escapeHtml(tipText)}</span>
+          </div>
+        ` : ''}
+
+        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+          <button class="action-btn btn-visit" style="flex:1; padding:12px 20px; font-size:0.92rem; min-width:140px;" onclick="closeModal()">
+            ✨ เข้าใจแล้ว (ตกลง)
+          </button>
+          <a href="#donationHub" class="action-btn btn-sample" style="flex:1; padding:12px 16px; font-size:0.92rem; min-width:140px; text-decoration:none;" onclick="closeModal()">
+            📖 ดูวิธีสร้างซอง 3 ขั้นตอน
+          </a>
+        </div>
+      </div>
+    `;
+    modal.classList.add('open');
   }
 
   function escapeHtml(text) {
