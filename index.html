@@ -880,31 +880,89 @@
       50% { box-shadow: 0 10px 35px rgba(16, 185, 129, 0.6), 0 0 25px rgba(217, 70, 239, 0.3); }
     }
 
-    /* Recent Supporters Live Feed */
-    .recent-supporters-feed {
-      margin-top: 24px; padding-top: 18px;
-      border-top: 1px solid rgba(192, 132, 252, 0.15);
+    /* Dual Board Container: Leaderboard & Recent 5 */
+    .donation-boards-container {
+      margin-top: 28px; padding-top: 20px;
+      border-top: 1px solid rgba(192, 132, 252, 0.18);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
     }
-    .feed-title {
-      font-family: 'Kanit', sans-serif; font-size: 0.88rem; font-weight: 700; color: #DDD6FE; margin-bottom: 10px;
+    @media (max-width: 768px) {
+      .donation-boards-container { grid-template-columns: 1fr; gap: 14px; }
+    }
+    .board-card {
+      background: rgba(14, 6, 24, 0.75);
+      border: 1px solid rgba(192, 132, 252, 0.18);
+      border-radius: 16px; padding: 18px 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .board-header {
       display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px; padding-bottom: 10px;
+      border-bottom: 1px solid rgba(192, 132, 252, 0.12);
+    }
+    .board-title-text {
+      font-family: 'Kanit', sans-serif; font-size: 0.92rem; font-weight: 700; color: #FAF5FF;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .board-badge-gold {
+      font-size: 0.72rem; font-weight: 700; color: #F59E0B;
+      background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35);
+      padding: 2px 8px; border-radius: 999px;
     }
     .feed-items-list {
       display: flex; flex-direction: column; gap: 8px;
     }
     .feed-item {
       background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(192, 132, 252, 0.12);
-      border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
       font-size: 0.84rem; font-family: 'Kanit', sans-serif;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .feed-item:hover {
+      transform: translateX(2px);
+      border-color: rgba(192, 132, 252, 0.35);
+    }
+    .rank-badge {
+      min-width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.8rem; font-family: 'Inter', sans-serif;
+      flex-shrink: 0;
+    }
+    .rank-1 {
+      background: linear-gradient(135deg, #F59E0B, #D97706); color: #FFF;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.55);
+      border: 1px solid #FDE68A;
+    }
+    .rank-2 {
+      background: linear-gradient(135deg, #94A3B8, #64748B); color: #FFF;
+      border: 1px solid #E2E8F0;
+    }
+    .rank-3 {
+      background: linear-gradient(135deg, #D97706, #92400E); color: #FFF;
+      border: 1px solid #FCD34D;
+    }
+    .rank-other {
+      background: rgba(168, 85, 247, 0.15); color: #C4B5FD;
+      border: 1px solid rgba(192, 132, 252, 0.25);
+    }
+    .board-item-top1 {
+      border: 1.5px solid rgba(245, 158, 11, 0.45) !important;
+      background: rgba(245, 158, 11, 0.08) !important;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
     }
     .feed-sender {
       font-weight: 700; color: #FAF5FF;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 130px;
     }
     .feed-msg {
-      color: #E9D5FF; font-weight: 400; flex: 1; margin: 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      color: #E9D5FF; font-weight: 400; flex: 1; margin: 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .feed-amount {
-      color: #F472B6; font-weight: 700; font-family: 'Inter', sans-serif;
+      color: #F472B6; font-weight: 800; font-family: 'Inter', sans-serif; flex-shrink: 0;
+    }
+    .feed-amount-gold {
+      color: #FBBF24; font-weight: 800; font-family: 'Inter', sans-serif; flex-shrink: 0;
+      text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
     }
 
     /* ===== 6. WORK CONTACT ZONE ===== */
@@ -1761,20 +1819,42 @@
           </button>
         </form>
 
-        <!-- Live Donation Feed / Recent Supporters -->
-        <div class="recent-supporters-feed">
-          <div class="feed-title">
-            <span>💖 ผู้สนับสนุนล่าสุด (Recent Supporters):</span>
-            <span style="font-size:0.75rem; color:#10B981; display:flex; align-items:center; gap:4px;">
-              <span style="width:6px; height:6px; background:#10B981; border-radius:50%; display:inline-block; animation: blinkDot 1.4s infinite;"></span>
-              Real-time Live Feed
-            </span>
-          </div>
-          <div class="feed-items-list" id="supportersFeedList">
-            <div class="feed-item" id="emptyFeedNotice" style="text-align: center; justify-content: center; color: #C4B5FD; padding: 18px 12px; font-size: 0.86rem; border-style: dashed; background: rgba(168, 85, 247, 0.05);">
-              ✨ ยังไม่มีรายการโดเนทในขณะนี้ มาร่วมเป็นผู้สนับสนุนคนแรกของต้าว Ibuki กันนะงับ! 🍵💜
+        <!-- Dual Board: Leaderboard (Top 1 - 5) & Recent History (1 - 5) -->
+        <div class="donation-boards-container">
+          
+          <!-- Board 1: Top 5 Leaderboard (อันดับผู้สนับสนุนสูงสุด) -->
+          <div class="board-card">
+            <div class="board-header">
+              <div class="board-title-text">
+                <span>👑 อันดับโดเนทสูงสุด</span>
+              </div>
+              <span class="board-badge-gold">Top 1 - 5 ⭐</span>
+            </div>
+            <div class="feed-items-list" id="leaderboardList">
+              <div class="feed-item" id="emptyLeaderboardNotice" style="text-align: center; justify-content: center; color: #C4B5FD; padding: 18px 12px; font-size: 0.82rem; border-style: dashed; background: rgba(168, 85, 247, 0.05);">
+                ✨ ยังไม่มีอันดับ มาร่วมเป็น Top Donors อันดับ 1 ของ Ibuki กันนะงับ! 👑💜
+              </div>
             </div>
           </div>
+
+          <!-- Board 2: Recent 1 - 5 History (ประวัติโดเนทล่าสุด 1 - 5 รายชื่อ) -->
+          <div class="board-card">
+            <div class="board-header">
+              <div class="board-title-text">
+                <span>🕒 ประวัติล่าสุด (1 - 5 รายชื่อ)</span>
+              </div>
+              <span style="font-size:0.72rem; color:#10B981; display:flex; align-items:center; gap:4px;">
+                <span style="width:6px; height:6px; background:#10B981; border-radius:50%; display:inline-block; animation: blinkDot 1.4s infinite;"></span>
+                Live History
+              </span>
+            </div>
+            <div class="feed-items-list" id="supportersFeedList">
+              <div class="feed-item" id="emptyFeedNotice" style="text-align: center; justify-content: center; color: #C4B5FD; padding: 18px 12px; font-size: 0.82rem; border-style: dashed; background: rgba(168, 85, 247, 0.05);">
+                ✨ ยังไม่มีรายการโดเนทในขณะนี้ มาร่วมส่งกำลังใจเป็นคนแรกกันนะงับ! 🍵💜
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -1982,17 +2062,112 @@
     });
   }
 
-  // ===== 5. TRUEMONEY DONATION INTERACTION (API CONNECTED) =====
+  // ===== 5. TRUEMONEY DONATION INTERACTION (PERSISTENT & LEADERBOARD CONNECTED) =====
   const API_BASE_URL = 'https://truemoney-backend.onrender.com';
   let totalDonationCurrent = 0;
   const goalMax = 10000;
 
-  // Fetch initial live stats and recent donations from backend
+  // ฟังก์ชันแสดงผล Leaderboard (Top 1 - 5)
+  function renderLeaderboardUI(data) {
+    const listEl = document.getElementById('leaderboardList');
+    if (!listEl) return;
+
+    if (!Array.isArray(data) || data.length === 0) {
+      listEl.innerHTML = `
+        <div class="feed-item" id="emptyLeaderboardNotice" style="text-align: center; justify-content: center; color: #C4B5FD; padding: 18px 12px; font-size: 0.82rem; border-style: dashed; background: rgba(168, 85, 247, 0.05);">
+          ✨ ยังไม่มีอันดับ มาร่วมเป็น Top Donors อันดับ 1 ของ Ibuki กันนะงับ! 👑💜
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = '';
+    data.slice(0, 5).forEach((item, idx) => {
+      const rank = idx + 1;
+      const feedItem = document.createElement('div');
+      feedItem.className = 'feed-item' + (rank === 1 ? ' board-item-top1' : '');
+
+      let rankClass = 'rank-other';
+      let medalIcon = `#${rank}`;
+      if (rank === 1) { rankClass = 'rank-1'; medalIcon = '🥇 #1'; }
+      else if (rank === 2) { rankClass = 'rank-2'; medalIcon = '🥈 #2'; }
+      else if (rank === 3) { rankClass = 'rank-3'; medalIcon = '🥉 #3'; }
+
+      const donor = item.donor_name || 'ผู้ไม่ประสงค์ออกนาม';
+      const totalAmt = parseFloat(item.total_amount) || 0;
+      const amtClass = rank === 1 ? 'feed-amount-gold' : 'feed-amount';
+
+      feedItem.innerHTML = `
+        <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
+          <span class="rank-badge ${rankClass}">${medalIcon}</span>
+          <span class="feed-sender" title="${escapeHtml(donor)}">${escapeHtml(donor)}</span>
+        </div>
+        <span class="${amtClass}">👑 ${totalAmt.toLocaleString()} ฿</span>
+      `;
+      listEl.appendChild(feedItem);
+    });
+  }
+
+  // ฟังก์ชันแสดงผล ประวัติล่าสุด 1 - 5 รายชื่อ
+  function renderRecentDonationsUI(data) {
+    const listEl = document.getElementById('supportersFeedList');
+    if (!listEl) return;
+
+    if (!Array.isArray(data) || data.length === 0) {
+      listEl.innerHTML = `
+        <div class="feed-item" id="emptyFeedNotice" style="text-align: center; justify-content: center; color: #C4B5FD; padding: 18px 12px; font-size: 0.82rem; border-style: dashed; background: rgba(168, 85, 247, 0.05);">
+          ✨ ยังไม่มีรายการโดเนทในขณะนี้ มาร่วมส่งกำลังใจเป็นคนแรกกันนะงับ! 🍵💜
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = '';
+    data.slice(0, 5).forEach((item, idx) => {
+      const num = idx + 1;
+      const feedItem = document.createElement('div');
+      feedItem.className = 'feed-item';
+      const donor = item.donor_name || item.sender_name || 'ผู้ไม่ประสงค์ออกนาม';
+      const amt = parseFloat(item.amount) || 0;
+      const msg = item.message || 'ขอให้ต้าวไอบุกิมีความสุข!';
+
+      feedItem.innerHTML = `
+        <div style="display:flex; align-items:center; gap:6px; overflow:hidden; flex:1;">
+          <span style="color:#A78BFA; font-weight:800; font-size:0.78rem; min-width:18px;">${num}.</span>
+          <span class="feed-sender" title="${escapeHtml(donor)}">🍵 ${escapeHtml(donor)}</span>
+          <span class="feed-msg" title="${escapeHtml(msg)}">"${escapeHtml(msg)}"</span>
+        </div>
+        <span class="feed-amount">+${amt.toLocaleString()} ฿</span>
+      `;
+      listEl.appendChild(feedItem);
+    });
+  }
+
+  // โหลดจาก LocalStorage ทันทีตอนเปิดหน้าเว็บ (ต่อให้กดรีเฟรช ข้อมูลก็ไม่หาย)
+  try {
+    const cachedRecent = localStorage.getItem('ibuki_cached_recent');
+    if (cachedRecent) renderRecentDonationsUI(JSON.parse(cachedRecent));
+    const cachedLeaderboard = localStorage.getItem('ibuki_cached_leaderboard');
+    if (cachedLeaderboard) renderLeaderboardUI(JSON.parse(cachedLeaderboard));
+    const cachedStats = localStorage.getItem('ibuki_cached_stats');
+    if (cachedStats) {
+      const s = JSON.parse(cachedStats);
+      totalDonationCurrent = s.total_amount || 0;
+      const pct = Math.min(Math.round((totalDonationCurrent / goalMax) * 100), 100);
+      document.getElementById('goalAmountDisplay').textContent = `${totalDonationCurrent.toLocaleString()} / ${goalMax.toLocaleString()} บาท (${pct}%)`;
+      document.getElementById('goalProgressBar').style.width = pct + '%';
+      const countEl = document.getElementById('goalCountDisplay');
+      if (countEl) countEl.textContent = `🍵 สนับสนุนต้าวไอบุกิไปแล้ว ${s.total_count || 0} ครั้ง`;
+    }
+  } catch (cacheErr) {}
+
+  // Fetch initial live stats, recent donations, and leaderboard from backend
   async function loadInitialStats() {
     try {
-      const [statsRes, recentRes] = await Promise.allSettled([
+      const [statsRes, recentRes, leaderRes] = await Promise.allSettled([
         fetch(`${API_BASE_URL}/api/stats`),
-        fetch(`${API_BASE_URL}/api/recent-donations`)
+        fetch(`${API_BASE_URL}/api/recent-donations`),
+        fetch(`${API_BASE_URL}/api/leaderboard`)
       ]);
 
       if (statsRes.status === 'fulfilled' && statsRes.value.ok) {
@@ -2000,7 +2175,6 @@
         if (statsJson.success && statsJson.data) {
           let total = parseFloat(statsJson.data.total_amount) || 0;
           let count = parseInt(statsJson.data.total_count, 10) || 0;
-          // หากเป็นยอด mock เดิม (3450) ให้รีเซ็ตเริ่มที่ 0
           if (total === 3450) { total = 0; count = 0; }
           
           totalDonationCurrent = total;
@@ -2011,40 +2185,31 @@
           document.getElementById('goalProgressBar').style.width = pct + '%';
           const countEl = document.getElementById('goalCountDisplay');
           if (countEl) countEl.textContent = `🍵 สนับสนุนต้าวไอบุกิไปแล้ว ${count} ครั้ง`;
+          try { localStorage.setItem('ibuki_cached_stats', JSON.stringify({ total_amount: total, total_count: count })); } catch(e){}
         }
       }
 
       if (recentRes.status === 'fulfilled' && recentRes.value.ok) {
         const recentJson = await recentRes.value.json();
         if (recentJson.success && Array.isArray(recentJson.data)) {
-          const feedList = document.getElementById('supportersFeedList');
-          // กรองข้อมูลตัวอย่าง mock ออก (หากมี) เพื่อแสดงเฉพาะคนโดเนทจริง
           const realDonations = recentJson.data.filter(item => {
             const name = item.donor_name || item.sender_name || '';
             return !name.includes('น้องมิว') && !name.includes('K.Bank_Gamer') && !name.includes('Fanclub_Ibuki');
           });
+          renderRecentDonationsUI(realDonations);
+          try { localStorage.setItem('ibuki_cached_recent', JSON.stringify(realDonations)); } catch(e){}
+        }
+      }
 
-          if (realDonations.length > 0) {
-            feedList.innerHTML = '';
-            realDonations.forEach(item => {
-              const feedItem = document.createElement('div');
-              feedItem.className = 'feed-item';
-              const donor = item.donor_name || item.sender_name || 'ผู้ไม่ประสงค์ออกนาม';
-              const amtTxt = item.amount ? `+${Number(item.amount).toLocaleString()} ฿` : '🍵 สนับสนุน';
-              feedItem.innerHTML = `
-                <span class="feed-sender">🍵 ${escapeHtml(donor)}</span>
-                <span class="feed-msg">"${escapeHtml(item.message || 'ขอให้ต้าวไอบุกิมีความสุข!')}"</span>
-                <span class="feed-amount">${amtTxt}</span>
-              `;
-              feedList.appendChild(feedItem);
-            });
-          } else {
-            feedList.innerHTML = `
-              <div class="feed-item" id="emptyFeedNotice" style="text-align: center; justify-content: center; color: #C4B5FD; padding: 18px 12px; font-size: 0.86rem; border-style: dashed; background: rgba(168, 85, 247, 0.05);">
-                ✨ ยังไม่มีรายการโดเนทในขณะนี้ มาร่วมเป็นผู้สนับสนุนคนแรกของต้าว Ibuki กันนะงับ! 🍵💜
-              </div>
-            `;
-          }
+      if (leaderRes.status === 'fulfilled' && leaderRes.value.ok) {
+        const leaderJson = await leaderRes.value.json();
+        if (leaderJson.success && Array.isArray(leaderJson.data)) {
+          const realLeaderboard = leaderJson.data.filter(item => {
+            const name = item.donor_name || '';
+            return !name.includes('น้องมิว') && !name.includes('K.Bank_Gamer') && !name.includes('Fanclub_Ibuki');
+          });
+          renderLeaderboardUI(realLeaderboard);
+          try { localStorage.setItem('ibuki_cached_leaderboard', JSON.stringify(realLeaderboard)); } catch(e){}
         }
       }
     } catch (e) {
@@ -2052,8 +2217,8 @@
     }
   }
   loadInitialStats();
-  // Auto-polling เพื่ออัพเดทผู้สนับสนุนและหลอดเป้าหมายแบบ Real-time ทุก 8 วินาที
-  setInterval(loadInitialStats, 8000);
+  // Auto-polling เพื่ออัพเดทผู้สนับสนุนและหลอดเป้าหมายแบบ Real-time ทุก 6 วินาที
+  setInterval(loadInitialStats, 6000);
 
   async function handleDonationSubmit(event) {
     event.preventDefault();
